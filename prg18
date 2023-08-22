@@ -1,0 +1,47 @@
+def apply_permutation(data, permutation):
+    return ''.join(data[bit - 1] for bit in permutation)
+
+def generate_subkeys(initial_key):
+    pc1 = [
+        # ... (PC-1 permutation table values)
+    ]
+
+    pc2 = [
+        # ... (PC-2 permutation table values)
+    ]
+
+    shifts = [
+        # ... (number of left shifts for each round)
+    ]
+
+    # Apply PC-1 permutation
+    key_pc1 = apply_permutation(initial_key, pc1)
+
+    c = key_pc1[:28]
+    d = key_pc1[28:]
+
+    subkeys = []
+
+    for round_num in range(16):
+        # Apply left shifts
+        c = c[shifts[round_num]:] + c[:shifts[round_num]]
+        d = d[shifts[round_num]:] + d[:shifts[round_num]]
+
+        cd_combined = c + d
+
+        # Apply PC-2 permutation to generate subkey
+        subkey = apply_permutation(cd_combined, pc2)
+
+        subkeys.append(subkey)
+
+    return subkeys
+
+def main():
+    initial_key = "0123456789ABCDEF"  # 64-bit initial key in hexadecimal
+    subkeys = generate_subkeys(initial_key)
+    
+    for i, subkey in enumerate(subkeys):
+        print(f"Subkey {i+1}: {subkey}")
+
+if __name__ == "__main__":
+    main()
